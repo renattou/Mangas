@@ -13,6 +13,10 @@ import json, os
 HERE = os.path.dirname(os.path.abspath(__file__))
 mapdata = json.load(open(os.path.join(HERE, "src", "brmap.json"), encoding="utf-8"))
 
+# Carrega fotos embutidas (base64 data URIs) se existirem
+_photos_path = os.path.join(HERE, "src", "photos.json")
+_photos = json.load(open(_photos_path, encoding="utf-8")) if os.path.exists(_photos_path) else {}
+
 # ---- Variety catalog ----
 varieties = [
  {"key":"tommy","nome":"Tommy Atkins","sil":"oval","grad":["#86b23a","#e8731f","#9c1f3a"],
@@ -118,6 +122,19 @@ states = {
 
 ufnames = {"AC":"Acre","AL":"Alagoas","AM":"Amazonas","AP":"Amapá","BA":"Bahia","CE":"Ceará","DF":"Distrito Federal","ES":"Espírito Santo","GO":"Goiás","MA":"Maranhão","MG":"Minas Gerais","MS":"Mato Grosso do Sul","MT":"Mato Grosso","PA":"Pará","PB":"Paraíba","PE":"Pernambuco","PI":"Piauí","PR":"Paraná","RJ":"Rio de Janeiro","RN":"Rio Grande do Norte","RO":"Rondônia","RR":"Roraima","RS":"Rio Grande do Sul","SC":"Santa Catarina","SE":"Sergipe","SP":"São Paulo","TO":"Tocantins"}
 
+# Injeta fotos (base64) nas variedades a partir de src/photos.json
+photos_count = 0
+for v in varieties:
+    p = _photos.get(v["key"], {})
+    if p.get("inteira"):
+        v["foto_inteira"] = p["inteira"]
+        photos_count += 1
+    if p.get("cortada"):
+        v["foto_cortada"] = p["cortada"]
+        photos_count += 1
+    if p.get("credito"):
+        v["foto_credito"] = p["credito"]
+
 payload = {
   "map": mapdata,
   "varieties": varieties,
@@ -129,4 +146,4 @@ TEMPLATE = open(os.path.join(HERE, "src", "template.html"), encoding="utf-8").re
 html = TEMPLATE.replace("/*__DATA__*/", json.dumps(payload, ensure_ascii=False))
 out = os.path.join(HERE, "mangas-do-brasil.html")
 open(out, "w", encoding="utf-8").write(html)
-print(f"OK -> {out} ({len(html)} bytes, {len(varieties)} variedades)")
+print(f"OK -> {out} ({len(html):,} bytes, {len(varieties)} variedades, {photos_count} fotos embutidas)")

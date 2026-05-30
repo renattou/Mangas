@@ -67,6 +67,7 @@ section{padding:60px 0}
 .slot .ph-add:hover{background:#fff}
 .slot .ph-badge{position:absolute;bottom:8px;left:8px;font-size:9.5px;font-weight:700;text-transform:uppercase;
   letter-spacing:.05em;background:rgba(94,138,58,.92);color:#fff;padding:3px 7px;border-radius:999px;display:none}
+.slot.has-img.wm-photo .ph-badge{background:rgba(30,90,160,.88)}
 .slot.has-img .ph-illu{display:none}
 .slot.has-img .ph-img{display:block}
 .slot.has-img .ph-badge{display:block}
@@ -186,8 +187,9 @@ footer ul{margin:6px 0;padding-left:18px}
     </ul>
     <div class="disc">
       <b>Confiança da predominância.</b> Para os seis grandes produtores (selo verde "dado") há respaldo em dados oficiais de produção/exportação. Para os demais estados (selo "estimativa") a predominância reflete variedades comuns de quintal e mercado regional — o IBGE não publica produção desagregada por cultivar.<br><br>
-      <b>Sobre as imagens.</b> Não existe acervo de fotos com licença livre cobrindo cada variedade (inteira e cortada), sobretudo para as cultivares brasileiras. Por isso o padrão é ilustração + espaço para você inserir fotos reais. Envie as fotos no chat para embuti-las permanentemente.
+      <b>Sobre as imagens.</b> As fotos embutidas são provenientes do Wikimedia Commons sob licença Creative Commons (CC BY / CC BY-SA). Cultivares brasileiras (Espada, Rosa, Ubá, Bourbon, Coquinho, Maçã, Itamaracá) não têm acervo de fotos livres disponível — nesses cards a ilustração SVG é o padrão. Use "＋ foto" para adicionar sua própria imagem (fica só nesta aba).
     </div>
+    <div id="photo-credits" style="margin-top:14px;font-size:12px;color:var(--ink2)"></div>
   </div>
 </footer>
 
@@ -222,11 +224,15 @@ function mango(key){
 function slot(key,kind){
   const lbl = kind==='whole'?'Inteira':'Cortada';
   const add = kind==='whole'?'＋ inteira':'＋ cortada';
-  return `<div class="slot" data-k="${key}" data-kind="${kind}">
+  const v=V[key];
+  const src=kind==='whole'?(v.foto_inteira||''):(v.foto_cortada||'');
+  const hasPhoto=src?'has-img wm-photo':'';
+  const badgeText=src?'Wikimedia CC':'sua foto';
+  return `<div class="slot ${hasPhoto}" data-k="${key}" data-kind="${kind}">
      <div class="ph-illu">${mango(key)}</div>
-     <img class="ph-img" alt="">
+     <img class="ph-img" alt="${v.nome} — ${lbl}"${src?` src="${src}"`:''}${src?' loading="lazy"':''}>
      <span class="ph-cap">${lbl}</span>
-     <span class="ph-badge">sua foto</span>
+     <span class="ph-badge">${badgeText}</span>
      <label class="ph-add"><span class="lbl">${add}</span><input type="file" accept="image/*" hidden></label>
    </div>`;
 }
@@ -252,7 +258,11 @@ grid.addEventListener('change', e=>{
   const inp=e.target; if(inp.type!=='file'||!inp.files[0]) return;
   const sl=inp.closest('.slot'); const img=sl.querySelector('.ph-img');
   img.src=URL.createObjectURL(inp.files[0]);
-  img.onload=()=>{sl.classList.add('has-img');};
+  img.onload=()=>{
+    sl.classList.add('has-img');
+    sl.classList.remove('wm-photo');
+    sl.querySelector('.ph-badge').textContent='sua foto';
+  };
   sl.querySelector('.ph-add .lbl').textContent='trocar';
 });
 
@@ -319,6 +329,15 @@ svg.querySelectorAll('.state').forEach(p=>{const uf=p.dataset.uf;
     if(window.innerWidth<880)panel.scrollIntoView({behavior:'smooth',block:'center'});});
   p.addEventListener('mouseenter',()=>{if(!selected)renderPanel(uf);});});
 svg.addEventListener('mouseleave',()=>{if(!selected)panel.innerHTML=overviewHTML();});
+
+// Photo credits in footer
+const creditsEl=document.getElementById('photo-credits');
+if(creditsEl){
+  const credits=varieties.filter(v=>v.foto_credito).map(v=>`<b>${v.nome}:</b> ${v.foto_credito}`);
+  if(credits.length){
+    creditsEl.innerHTML='<b>Créditos das fotos (Wikimedia Commons):</b> '+credits.join(' · ');
+  }
+}
 </script>
 </body>
 </html>
