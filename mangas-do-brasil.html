@@ -62,6 +62,21 @@ section{padding:60px 0}
 .slot.has-img .ph-illu{display:none}
 .slot.has-img .ph-img{display:block}
 .slot.has-img .ph-badge{display:block}
+.slot.has-img{cursor:zoom-in}
+
+#lightbox{display:none;position:fixed;inset:0;z-index:10000;background:rgba(20,12,4,.88);
+  align-items:center;justify-content:center;padding:20px}
+#lightbox.open{display:flex}
+#lightbox img{max-width:min(92vw,900px);max-height:90vh;object-fit:contain;border-radius:14px;
+  box-shadow:0 40px 80px rgba(0,0,0,.6);user-select:none}
+#lightbox .lb-cap{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);
+  background:rgba(20,12,4,.78);color:#fff;font-family:'Archivo';font-weight:700;font-size:13px;
+  text-transform:uppercase;letter-spacing:.08em;padding:6px 18px;border-radius:999px;pointer-events:none;
+  white-space:nowrap}
+#lightbox .lb-close{position:fixed;top:20px;right:22px;width:40px;height:40px;border-radius:50%;
+  background:rgba(251,245,230,.15);border:1.5px solid rgba(255,255,255,.25);color:#fff;font-size:22px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
+#lightbox .lb-close:hover{background:rgba(251,245,230,.28)}
 
 .card h3{font-size:24px;margin-top:2px}
 .card .tag{display:inline-block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;
@@ -163,6 +178,12 @@ footer ul{margin:6px 0;padding-left:18px}
     </div>
   </div>
 </section>
+
+<div id="lightbox" role="dialog" aria-modal="true">
+  <button class="lb-close" aria-label="Fechar">✕</button>
+  <img id="lb-img" src="" alt="">
+  <div class="lb-cap" id="lb-cap"></div>
+</div>
 
 <footer>
   <div class="wrap">
@@ -301,6 +322,24 @@ svg.querySelectorAll('.state').forEach(p=>{const uf=p.dataset.uf;
     if(window.innerWidth<880)panel.scrollIntoView({behavior:'smooth',block:'center'});});
   p.addEventListener('mouseenter',()=>{if(!selected)renderPanel(uf);});});
 svg.addEventListener('mouseleave',()=>{if(!selected)panel.innerHTML=overviewHTML();});
+
+// Lightbox
+const lb=document.getElementById('lightbox');
+const lbImg=document.getElementById('lb-img');
+const lbCap=document.getElementById('lb-cap');
+function openLB(src,caption){lbImg.src=src;lbCap.textContent=caption;lb.classList.add('open');document.body.style.overflow='hidden';}
+function closeLB(){lb.classList.remove('open');document.body.style.overflow='';lbImg.src='';}
+lb.querySelector('.lb-close').onclick=closeLB;
+lb.onclick=e=>{if(e.target===lb)closeLB();};
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLB();});
+grid.addEventListener('click',e=>{
+  const sl=e.target.closest('.slot.has-img');
+  if(!sl)return;
+  const img=sl.querySelector('.ph-img');
+  const v=V[sl.dataset.k];
+  const kind=sl.dataset.kind==='whole'?'Inteira':'Cortada';
+  openLB(img.src,`${v.nome} — ${kind}`);
+});
 
 // Photo credits in footer
 const creditsEl=document.getElementById('photo-credits');
