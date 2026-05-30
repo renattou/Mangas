@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mangas do Brasil — variedades e predominância por estado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,500&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f4ead3; --paper2:#efe1c2; --ink:#2c2114; --ink2:#5c4a32;
+  --line:#d8c39a; --mango:#e2701f; --leaf:#5e8a3a; --crimson:#9c1f3a;
+  --card:#fbf5e6; --shadow:0 18px 40px -18px rgba(60,40,12,.45);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Archivo',sans-serif;line-height:1.55;
+  background-image:radial-gradient(circle at 12% 8%, rgba(226,112,31,.08), transparent 38%),
+    radial-gradient(circle at 88% 4%, rgba(94,138,58,.10), transparent 34%),
+    radial-gradient(circle at 50% 100%, rgba(156,31,58,.06), transparent 50%);}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:'Fraunces',serif;font-weight:900;line-height:1.02;letter-spacing:-.01em;margin:0}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.035;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+
+header.hero{position:relative;overflow:hidden;padding:60px 0 30px;border-bottom:2px solid var(--line)}
+.eyebrow{font-family:'Archivo';font-weight:700;text-transform:uppercase;letter-spacing:.32em;font-size:12px;color:var(--mango)}
+.hero h1{font-size:clamp(48px,9vw,118px);margin:.12em 0 .1em}
+.hero h1 em{font-style:italic;font-weight:500;color:var(--crimson)}
+.hero p.lead{max-width:640px;font-size:clamp(16px,2vw,20px);color:var(--ink2)}
+.hero-mangos{position:absolute;top:-10px;right:-30px;width:min(46%,520px);opacity:.95;pointer-events:none}
+@media(max-width:760px){.hero-mangos{position:static;width:60%;margin:8px auto -10px;display:block;opacity:1}}
+.stats{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px}
+.stat{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:14px 18px;box-shadow:var(--shadow)}
+.stat b{font-family:'Fraunces';font-weight:900;font-size:26px;display:block;line-height:1}
+.stat span{font-size:12.5px;color:var(--ink2);text-transform:uppercase;letter-spacing:.06em}
+
+section{padding:60px 0}
+.sec-head{margin-bottom:28px}
+.sec-head h2{font-size:clamp(30px,5vw,52px)}
+.sec-head p{margin:6px 0 0;color:var(--ink2);max-width:640px}
+.kicker{font-family:'Archivo';font-weight:700;text-transform:uppercase;letter-spacing:.28em;font-size:11.5px;color:var(--leaf);margin-bottom:8px}
+
+.photo-note{display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1.4px dashed var(--line);
+  border-radius:14px;padding:14px 18px;margin-bottom:26px;font-size:13.5px;color:var(--ink2)}
+.photo-note b{color:var(--ink)}
+.photo-note .ic{flex:0 0 auto;width:34px;height:34px;border-radius:9px;background:var(--mango);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow);
+  display:flex;flex-direction:column;position:relative;overflow:hidden;transition:transform .25s,box-shadow .25s}
+.card:hover{transform:translateY(-4px);box-shadow:0 26px 50px -20px rgba(60,40,12,.55)}
+.card .accent{position:absolute;top:0;left:0;width:100%;height:5px}
+
+.photos{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:6px 0 12px}
+.slot{position:relative;border-radius:13px;overflow:hidden;aspect-ratio:1/1;background:#f1e4c6;
+  border:1.4px solid var(--line);display:flex;align-items:center;justify-content:center}
+.slot .ph-illu{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:8px}
+.slot .ph-illu svg{height:100%;width:auto;filter:drop-shadow(0 12px 12px rgba(60,40,12,.28))}
+.slot .ph-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
+.slot .ph-cap{position:absolute;top:8px;left:8px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+  background:rgba(44,33,20,.72);color:#fff;padding:3px 8px;border-radius:999px}
+.slot .ph-add{position:absolute;bottom:8px;right:8px;display:flex;align-items:center;gap:5px;cursor:pointer;
+  background:rgba(251,245,230,.94);border:1.3px solid var(--line);border-radius:999px;padding:4px 10px;
+  font-size:11px;font-weight:700;color:var(--ink);transition:background .15s}
+.slot .ph-add:hover{background:#fff}
+.slot .ph-badge{position:absolute;bottom:8px;left:8px;font-size:9.5px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.05em;background:rgba(94,138,58,.92);color:#fff;padding:3px 7px;border-radius:999px;display:none}
+.slot.has-img .ph-illu{display:none}
+.slot.has-img .ph-img{display:block}
+.slot.has-img .ph-badge{display:block}
+
+.card h3{font-size:24px;margin-top:2px}
+.card .tag{display:inline-block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;
+  padding:3px 9px;border-radius:999px;color:#fff;align-self:flex-start;margin-top:6px}
+.card .desc{font-size:13.5px;color:var(--ink2);margin:10px 0 14px}
+.specs{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:12.5px;margin-top:auto;border-top:1px dashed var(--line);padding-top:12px}
+.specs dt{color:var(--leaf);font-weight:700;text-transform:uppercase;letter-spacing:.05em;font-size:11px}
+.specs dd{margin:0;color:var(--ink)}
+
+#mapa{background:linear-gradient(180deg,var(--paper2),var(--paper));border-top:2px solid var(--line);border-bottom:2px solid var(--line)}
+.map-layout{display:grid;grid-template-columns:1.15fr .85fr;gap:34px;align-items:start}
+@media(max-width:880px){.map-layout{grid-template-columns:1fr}}
+.map-box{position:relative;background:var(--card);border:1.5px solid var(--line);border-radius:20px;padding:10px;box-shadow:var(--shadow)}
+.map-box svg{width:100%;height:auto;display:block;touch-action:manipulation}
+.state{stroke:#fbf5e6;stroke-width:1.1;cursor:pointer;transition:opacity .15s,filter .15s}
+.state:hover{opacity:.82}
+.state.sel{stroke:var(--ink);stroke-width:2.4;filter:drop-shadow(0 0 6px rgba(44,33,20,.5))}
+.ufcap{font-family:'Archivo';font-weight:700;font-size:12px;fill:#fff;pointer-events:none;
+  paint-order:stroke;stroke:rgba(0,0,0,.30);stroke-width:2.6px;letter-spacing:.01em}
+
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:14px}
+.legend button{display:flex;align-items:center;gap:7px;background:none;border:1.4px solid var(--line);
+  border-radius:999px;padding:5px 12px 5px 6px;font-family:'Archivo';font-weight:600;font-size:12.5px;color:var(--ink);cursor:pointer;transition:background .15s,border-color .15s}
+.legend button:hover{border-color:var(--ink)}
+.legend button.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.legend .dot{width:14px;height:14px;border-radius:4px;flex:0 0 auto}
+
+.panel{background:var(--card);border:1.5px solid var(--line);border-radius:20px;padding:24px;box-shadow:var(--shadow);position:sticky;top:18px}
+.panel .ph2{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+.panel .flagdot{width:46px;height:46px;border-radius:12px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-family:'Fraunces';font-weight:900;color:#fff;font-size:17px}
+.panel h3{font-size:30px}
+.panel .sub{color:var(--ink2);font-size:13px;margin:2px 0 0}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+.badge{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:4px 10px;border-radius:999px;border:1.4px solid var(--line)}
+.badge.polo{background:#7a2218;color:#fff;border-color:#7a2218}
+.badge.relevante{background:var(--mango);color:#fff;border-color:var(--mango)}
+.badge.emergente{background:#c9a227;color:#3a2c08;border-color:#c9a227}
+.badge.consumo{background:transparent;color:var(--ink2)}
+.badge.conf-alta{background:var(--leaf);color:#fff;border-color:var(--leaf)}
+.badge.conf-estimativa{background:transparent;color:var(--ink2);border-style:dashed}
+.panel .nota{font-size:14px;color:var(--ink);background:var(--paper2);border-radius:12px;padding:12px 14px;margin:4px 0 18px}
+.vlist{display:flex;flex-direction:column;gap:10px}
+.vrow{display:flex;align-items:center;gap:12px;padding:8px;border-radius:12px;transition:background .15s}
+.vrow:hover{background:var(--paper2)}
+.vrow svg{height:46px;width:auto;flex:0 0 auto;filter:drop-shadow(0 6px 6px rgba(60,40,12,.25))}
+.vrow .vn{font-family:'Fraunces';font-weight:600;font-size:17px;line-height:1.1}
+.vrow .vt{font-size:12px;color:var(--ink2)}
+.vrow .lead-pill{margin-left:auto;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--crimson);border:1.3px solid var(--crimson);border-radius:999px;padding:2px 8px}
+.hint{font-size:12.5px;color:var(--ink2);margin-top:14px;font-style:italic}
+
+footer{padding:48px 0 70px;border-top:2px solid var(--line);background:var(--paper2)}
+footer h3{font-size:22px;margin-bottom:10px}
+footer p,footer li{font-size:13px;color:var(--ink2)}
+footer ul{margin:6px 0;padding-left:18px}
+.disc{background:var(--card);border:1.4px dashed var(--line);border-radius:14px;padding:16px 18px;margin-top:18px;font-size:13px}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-mangos" id="heroMangos"></div>
+    <div class="eyebrow">Guia visual · fruticultura brasileira</div>
+    <h1>Mangas<br>do <em>Brasil</em></h1>
+    <p class="lead">As principais variedades cultivadas no país e onde cada uma predomina — do polo exportador do Vale do São Francisco aos quintais da Baixada Cuiabana.</p>
+    <div class="stats">
+      <div class="stat"><b>200+</b><span>variedades no país</span></div>
+      <div class="stat"><b>1,84 mi t</b><span>colhidas em 2024</span></div>
+      <div class="stat"><b>~93%</b><span>da exportação no Vale do S. Francisco</span></div>
+      <div class="stat"><b>6º</b><span>maior produtor mundial</span></div>
+    </div>
+  </div>
+</header>
+
+<section id="variedades">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">Catálogo</div>
+      <h2>As variedades</h2>
+      <p>Cada card tem dois espaços de foto — <b>inteira</b> e <b>cortada ao meio</b>. As ilustrações são o estado inicial; toque em "＋ foto" para colocar a sua imagem.</p>
+    </div>
+    <div class="photo-note">
+      <div class="ic">＋</div>
+      <div><b>Adicione fotos reais.</b> Clique em "＋ inteira" / "＋ cortada" em qualquer card para carregar uma foto do seu dispositivo (fica salva só nesta aba). Para embutir de forma permanente no arquivo, me envie as fotos no chat. As silhuetas coloridas são ilustrações fiéis a forma e cor — não fotografias.</div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </div>
+</section>
+
+<section id="mapa">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">Mapa interativo</div>
+      <h2>Predominância por estado</h2>
+      <p>Cada estado pintado pela variedade predominante. Toque ou clique para ver os detalhes. Filtre por variedade na legenda.</p>
+    </div>
+    <div class="map-layout">
+      <div>
+        <div class="map-box"><svg id="brmap" xmlns="http://www.w3.org/2000/svg"></svg></div>
+        <div class="legend" id="legend"></div>
+      </div>
+      <aside class="panel" id="panel"></aside>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <h3>Fontes & método</h3>
+    <p>Produção e exportação: Observatório do Mercado da Manga (Embrapa Semiárido) e Pesquisa Agrícola Municipal (PAM/IBGE), safras 2023–2024. Características das variedades: Embrapa, JBox e literatura de fruticultura.</p>
+    <ul>
+      <li>Participação por área plantada (IBGE): Bahia 42,6% · Pernambuco 24,4% · São Paulo 11,6% · Minas Gerais 7,5% · Ceará 4,7% · Rio Grande do Norte 3,1%.</li>
+      <li>Nível de produção: <b>polo</b> (BA, PE, SP) · <b>relevante</b> (MG, CE, RN) · <b>emergente</b> (MT, GO) · <b>consumo regional</b> (demais).</li>
+    </ul>
+    <div class="disc">
+      <b>Confiança da predominância.</b> Para os seis grandes produtores (selo verde "dado") há respaldo em dados oficiais de produção/exportação. Para os demais estados (selo "estimativa") a predominância reflete variedades comuns de quintal e mercado regional — o IBGE não publica produção desagregada por cultivar.<br><br>
+      <b>Sobre as imagens.</b> Não existe acervo de fotos com licença livre cobrindo cada variedade (inteira e cortada), sobretudo para as cultivares brasileiras. Por isso o padrão é ilustração + espaço para você inserir fotos reais. Envie as fotos no chat para embuti-las permanentemente.
+    </div>
+  </div>
+</footer>
+
+<script>
+const DATA = /*__DATA__*/;
+const {map, varieties, states, ufnames} = DATA;
+const V = Object.fromEntries(varieties.map(v=>[v.key,v]));
+
+const SIL = {
+ oval:"M104,20 C150,16 178,58 176,108 C174,158 138,198 96,198 C58,198 28,164 28,120 C28,74 60,24 104,20 Z",
+ elong:"M118,18 C156,22 172,66 162,120 C152,172 116,200 84,196 C52,192 36,150 44,104 C52,56 84,16 118,18 Z",
+ keitt:"M116,18 C154,22 172,66 162,120 C152,172 116,200 84,196 C52,192 36,150 44,104 C52,56 82,16 116,18 Z",
+ long:"M140,22 C168,40 168,84 150,124 C130,168 92,200 66,194 C44,189 40,158 54,124 C70,86 92,52 110,36 C120,27 130,21 140,22 Z",
+ heart:"M100,26 C140,18 182,44 178,96 C175,134 146,168 108,192 C102,196 98,196 92,192 C56,168 26,134 24,96 C21,46 60,18 100,26 Z",
+ beak:"M112,18 C152,18 176,60 172,108 C169,148 146,182 116,194 C108,197 104,200 100,206 C96,200 92,196 84,193 C52,180 30,150 30,112 C30,66 66,18 112,18 Z",
+ broad:"M100,22 C158,18 184,60 182,104 C180,150 142,190 100,190 C58,190 20,150 18,104 C16,60 42,26 100,22 Z",
+ haden:"M100,22 C150,18 180,56 178,104 C176,152 140,192 100,192 C60,192 24,152 22,104 C20,56 50,26 100,22 Z",
+ flat:"M100,46 C148,42 178,66 176,98 C174,132 142,158 100,158 C58,158 26,132 24,98 C22,66 52,50 100,46 Z",
+ small:"M100,40 C132,38 152,68 150,104 C148,140 124,168 98,168 C70,168 50,140 50,106 C50,70 70,42 100,40 Z",
+};
+const LEAF='<path d="M104,24 C108,4 132,-4 150,2 C140,18 124,28 106,30 Z" fill="#4b7d3a"/><path d="M104,24 C100,8 86,-2 70,2 C82,16 94,24 104,28 Z" fill="#5e9447"/><rect x="99" y="20" width="5" height="16" rx="2" fill="#6b4a2b"/>';
+let gid=0;
+function mango(key){
+  const v=V[key]; const id="mg"+(gid++); const [c1,c2,c3]=v.grad;
+  return `<svg viewBox="-4 -10 208 222" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${v.nome}">
+    <defs><radialGradient id="${id}" cx="38%" cy="28%" r="82%">
+      <stop offset="0%" stop-color="${c1}"/><stop offset="55%" stop-color="${c2}"/><stop offset="100%" stop-color="${c3}"/>
+    </radialGradient></defs>${LEAF}
+    <path d="${SIL[v.sil]}" fill="url(#${id})" stroke="rgba(0,0,0,.18)" stroke-width="1.4"/>
+    <ellipse cx="72" cy="74" rx="24" ry="14" fill="#fff" opacity="0.16" transform="rotate(-26 72 74)"/></svg>`;
+}
+function slot(key,kind){
+  const lbl = kind==='whole'?'Inteira':'Cortada';
+  const add = kind==='whole'?'＋ inteira':'＋ cortada';
+  return `<div class="slot" data-k="${key}" data-kind="${kind}">
+     <div class="ph-illu">${mango(key)}</div>
+     <img class="ph-img" alt="">
+     <span class="ph-cap">${lbl}</span>
+     <span class="ph-badge">sua foto</span>
+     <label class="ph-add"><span class="lbl">${add}</span><input type="file" accept="image/*" hidden></label>
+   </div>`;
+}
+
+const grid=document.getElementById('grid');
+grid.innerHTML = varieties.map(v=>`
+  <article class="card">
+    <div class="accent" style="background:${v.cor}"></div>
+    <div class="photos">${slot(v.key,'whole')}${slot(v.key,'cut')}</div>
+    <h3>${v.nome}</h3>
+    <span class="tag" style="background:${v.cor}">${v.uso.split(' · ')[0]}</span>
+    <p class="desc">${v.desc}</p>
+    <dl class="specs">
+      <dt>Origem</dt><dd>${v.origem}</dd>
+      <dt>Peso</dt><dd>${v.peso}</dd>
+      <dt>Fibra</dt><dd>${v.fibra}</dd>
+      <dt>Brix</dt><dd>${v.brix}</dd>
+      <dt>Uso</dt><dd>${v.uso}</dd>
+    </dl>
+  </article>`).join('');
+
+grid.addEventListener('change', e=>{
+  const inp=e.target; if(inp.type!=='file'||!inp.files[0]) return;
+  const sl=inp.closest('.slot'); const img=sl.querySelector('.ph-img');
+  img.src=URL.createObjectURL(inp.files[0]);
+  img.onload=()=>{sl.classList.add('has-img');};
+  sl.querySelector('.ph-add .lbl').textContent='trocar';
+});
+
+document.getElementById('heroMangos').innerHTML =
+  `<div style="display:flex;gap:0;align-items:flex-end;justify-content:flex-end">
+    <div style="width:34%;transform:rotate(-8deg) translateY(8px)">${mango('rosa')}</div>
+    <div style="width:42%;transform:rotate(4deg);z-index:2">${mango('tommy')}</div>
+    <div style="width:30%;transform:rotate(12deg) translateY(14px)">${mango('palmer')}</div>
+  </div>`;
+
+const svg=document.getElementById('brmap');
+svg.setAttribute('viewBox', map.viewBox);
+let paths='';
+for(const uf in map.paths){
+  const st=states[uf]; const col = st? V[st.predom].cor : '#cbb88f';
+  paths+=`<path class="state" data-uf="${uf}" d="${map.paths[uf]}" fill="${col}"></path>`;
+}
+let caps='';
+for(const uf in map.centroids){const c=map.centroids[uf];
+  caps+=`<text class="ufcap" x="${c[0]}" y="${c[1]+4}" text-anchor="middle">${uf}</text>`;}
+svg.innerHTML=paths+caps;
+
+const panel=document.getElementById('panel');
+const TIERLBL={polo:'Polo produtor',relevante:'Produção relevante',emergente:'Produção emergente',consumo:'Consumo regional'};
+function renderPanel(uf){
+  const st=states[uf]; if(!st){panel.innerHTML=overviewHTML();return;}
+  const lead=st.predom;
+  const rows=st.vars.map(k=>`<div class="vrow">${mango(k)}<div><div class="vn">${V[k].nome}</div><div class="vt">${V[k].uso}</div></div>${k===lead?'<span class="lead-pill">predominante</span>':''}</div>`).join('');
+  panel.innerHTML=`
+    <div class="ph2"><div class="flagdot" style="background:${V[lead].cor}">${uf}</div>
+      <div><h3>${ufnames[uf]}</h3><p class="sub">Predominante: <b>${V[lead].nome}</b></p></div></div>
+    <div class="badges"><span class="badge ${st.tier}">${TIERLBL[st.tier]}</span>
+      <span class="badge conf-${st.conf}">${st.conf==='alta'?'dado oficial':'estimativa'}</span></div>
+    <div class="nota">${st.nota}</div><div class="vlist">${rows}</div>
+    <p class="hint">Variedades cultivadas / consumidas no estado, da predominante às secundárias.</p>`;
+}
+function overviewHTML(){
+  return `<div class="ph2"><div class="flagdot" style="background:var(--leaf)">BR</div>
+      <div><h3>Brasil</h3><p class="sub">Selecione um estado no mapa</p></div></div>
+    <div class="nota">A produção comercial concentra-se no <b>Nordeste</b> (Vale do São Francisco, em PE e BA) e no <b>Sudeste</b> (SP e MG). A <b>Tommy Atkins</b> domina os plantios; a <b>Palmer</b> lidera as exportações; a <b>Ubá</b> reina na indústria de suco mineira; e a <b>Rosa</b> e a <b>Espada</b> são as tradicionais de quintal e feira.</div>
+    <div class="vlist">${['tommy','palmer','uba','rosa','espada'].map(k=>`<div class="vrow">${mango(k)}<div><div class="vn">${V[k].nome}</div><div class="vt">${V[k].desc.split('.')[0]}.</div></div></div>`).join('')}</div>
+    <p class="hint">Apenas as variedades que predominam em pelo menos um estado aparecem no mapa.</p>`;
+}
+panel.innerHTML=overviewHTML();
+
+const legend=document.getElementById('legend');
+const predomKeys=[...new Set(Object.values(states).map(s=>s.predom))];
+let activeFilter=null;
+legend.innerHTML=predomKeys.map(k=>`<button data-k="${k}"><span class="dot" style="background:${V[k].cor}"></span>${V[k].nome}</button>`).join('');
+function applyFilter(){
+  svg.querySelectorAll('.state').forEach(p=>{const uf=p.dataset.uf;const st=states[uf];
+    if(!activeFilter){p.style.opacity=1;return;}
+    p.style.opacity=(st&&(st.predom===activeFilter||st.vars.includes(activeFilter)))?1:0.18;});
+}
+legend.querySelectorAll('button').forEach(b=>{b.onclick=()=>{const k=b.dataset.k;
+  activeFilter=activeFilter===k?null:k;
+  legend.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x.dataset.k===activeFilter));
+  applyFilter();};});
+
+let selected=null;
+svg.querySelectorAll('.state').forEach(p=>{const uf=p.dataset.uf;
+  p.addEventListener('click',()=>{if(selected)selected.classList.remove('sel');
+    p.classList.add('sel');selected=p;renderPanel(uf);
+    if(window.innerWidth<880)panel.scrollIntoView({behavior:'smooth',block:'center'});});
+  p.addEventListener('mouseenter',()=>{if(!selected)renderPanel(uf);});});
+svg.addEventListener('mouseleave',()=>{if(!selected)panel.innerHTML=overviewHTML();});
+</script>
+</body>
+</html>
